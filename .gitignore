@@ -11,6 +11,10 @@ npm-debug.log*
 # Покрытие тестами
 /coverage
 
+# Временные инструменты локальной проверки
+/.verify
+/.npm-cache
+
 # IDE и ОС
 /.idea
 /.vscode
