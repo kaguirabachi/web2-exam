@@ -7,6 +7,7 @@ import { Exhibit } from './exhibits/exhibit.entity';
 import { ExhibitsModule } from './exhibits/exhibits.module';
 import { Museum } from './museums/museum.entity';
 import { MuseumsModule } from './museums/museums.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { MuseumsModule } from './museums/museums.module';
     MuseumsModule,
     ExhibitsModule,
     ArtifactsModule,
+    SeedModule,
   ],
 })
 export class AppModule {}
