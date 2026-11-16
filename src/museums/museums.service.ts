@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Artifact } from '../artifacts/artifact.entity';
+import { Exhibit } from '../exhibits/exhibit.entity';
 import { CreateMuseumDto } from './dto/create-museum.dto';
 import { UpdateMuseumDto } from './dto/update-museum.dto';
 import { Museum } from './museum.entity';
@@ -10,6 +12,8 @@ export class MuseumsService {
   constructor(
     @InjectRepository(Museum)
     private readonly museumsRepository: Repository<Museum>,
+    @InjectRepository(Exhibit)
+    private readonly exhibitsRepository: Repository<Exhibit>,
   ) {}
 
   create(dto: CreateMuseumDto): Promise<Museum> {
@@ -41,5 +45,27 @@ export class MuseumsService {
     const museum = await this.findOne(id);
     await this.museumsRepository.remove(museum);
     return { message: `Музей с id=${id} удалён` };
+  }
+
+  async findExhibits(id: number): Promise<Exhibit[]> {
+    await this.findOne(id);
+
+    return this.exhibitsRepository.find({
+      where: { museumId: id },
+      order: { id: 'ASC' },
+    });
+  }
+
+  async findArtifacts(id: number): Promise<Artifact[]> {
+    await this.findOne(id);
+
+    const exhibits = await this.exhibitsRepository.find({
+      where: { museumId: id },
+      relations: ['artifacts'],
+    });
+
+    return exhibits
+      .flatMap((exhibit) => exhibit.artifacts)
+      .sort((first, second) => first.id - second.id);
   }
 }
